@@ -1,25 +1,54 @@
-'use strict';
-
 import express from 'express';
 import massive from 'massive';
+import logger from './logger';
 
-var app = express();
+let server;
 
-app.get('/things', (req, res) => {
+const load = () => {
+  const app = express();
+
+  app.get('/things', (req, res) => {
     massive();
-});
+    res.status(200).json({
+      title: 'Some title',
+      id: 1,
+      author: 'Some author',
+      description: 'Some description',
+    });
+  });
 
-app.post('/things', (req, res) => {
+  app.post('/things', (req, res) => {
+    res.status(201).json({
+      title: 'Some title',
+      id: 1,
+      author: 'Some author',
+      description: 'Some description',
+    });
+  });
+  app.get('/things/:thingId', (req, res) => {
+    res.status(200).json({
+      title: 'Some title',
+      id: 1,
+      author: 'Some author',
+      description: 'Some description',
+    });
+  });
+  app.patch('/things/:thingId', (req, res) => {
+    res.status(200).json({
+      title: 'Some title',
+      id: 1,
+      author: 'Some author',
+      description: 'Some description',
+    });
+  });
+  app.delete('/things/:thingId', (req, res) => {
+    res.status(204).send('');
+  });
+  server = app.listen(process.env.PORT || 3000, function appStarted() {
+    logger.info(`Listening on port ${this.address().port}`);
+  });
+};
 
-});
-app.get('/things/:thingId', (req, res) => {
-    
-});
-app.patch('/things/:thingId', (req, res) => {
-    
-});
-app.delete('/things/:thingId', (req, res) => {
-    
-});
-app.listen(process.env.PORT || 3000, () =>
-    console.log(`Listening on port ${app.get('port')}`));
+load();
+
+module.exports = server;
