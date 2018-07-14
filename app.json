@@ -1,6 +1,9 @@
 {
     "name": "Test",
     "image": "heroku/node",
+    "scripts": {
+        "postdeploy": "npm run seed"
+    },
     "addons": [
         {
             "plan": "heroku-postgresql",
