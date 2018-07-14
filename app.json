@@ -4,7 +4,7 @@
     "addons": [
         {
             "plan": "heroku-postgresql",
-            "as": "BACKUP_DATABASE",
+            "as": "DATABASE_URL",
             "options": {
                 "version": "9.5"
             }
