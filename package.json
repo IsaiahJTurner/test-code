@@ -6,7 +6,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "pretest": "./node_modules/.bin/eslint  . --ext .js",
+    "lint": "./node_modules/.bin/eslint  . --ext .js",
+    "pretest": "npm run lint",
     "test": "./node_modules/.bin/mocha --reporter spec --compilers js:babel-register",
     "start": "babel-node index.js",
     "seed": "babel-node seed.js"
