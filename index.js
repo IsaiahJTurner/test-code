@@ -10,9 +10,7 @@ const server = new Promise(async (resolve) => {
   app.use(bodyParser.json());
   app.use((req, res, next) => {
     res.sendError = (responseStatus, errorMessage, errorObject) => {
-      if (errorObject) {
-        logger.error(errorMessage, errorObject);
-      }
+      if (errorObject) logger.error(errorMessage, errorObject);
       res.status(responseStatus).json({
         error: errorMessage,
       });
@@ -29,9 +27,9 @@ const server = new Promise(async (resolve) => {
   });
 
   app.post('/things', async (req, res) => {
-    if (!_.isString(req.body.title)) res.sendError(400, 'Missing or invalid title');
-    if (!_.isString(req.body.author)) res.sendError(400, 'Missing or invalid author');
-    if (!_.isString(req.body.content)) res.sendError(400, 'Missing or invalid content');
+    if (!_.isString(req.body.title)) return res.sendError(400, 'Missing or invalid title');
+    if (!_.isString(req.body.author)) return res.sendError(400, 'Missing or invalid author');
+    if (!_.isString(req.body.content)) return res.sendError(400, 'Missing or invalid content');
 
     try {
       const thing = await db.thing.insert({
@@ -53,9 +51,9 @@ const server = new Promise(async (resolve) => {
     }
   });
   app.patch('/things/:thingId', async (req, res) => {
-    if (!_.isString(req.body.title)) res.sendError(400, 'Missing or invalid title');
-    if (!_.isString(req.body.author)) res.sendError(400, 'Missing or invalid author');
-    if (!_.isString(req.body.content)) res.sendError(400, 'Missing or invalid content');
+    if (!_.isString(req.body.title)) return res.sendError(400, 'Missing or invalid title');
+    if (!_.isString(req.body.author)) return res.sendError(400, 'Missing or invalid author');
+    if (!_.isString(req.body.content)) return res.sendError(400, 'Missing or invalid content');
 
     try {
       const thing = await db.thing.save({
@@ -70,7 +68,12 @@ const server = new Promise(async (resolve) => {
     }
   });
   app.delete('/things/:thingId', async (req, res) => {
-    res.status(204).send('');
+    try {
+      await db.thing.destroy(req.params.thingId);
+      res.status(204).send('');
+    } catch (error) {
+      res.sendError(500, 'Unable to update thing', error);
+    }
   });
   resolve(app.listen(process.env.PORT || 3000, function appStarted() {
     logger.info(`Listening on port ${this.address().port}`);
